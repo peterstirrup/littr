@@ -1,3 +1,4 @@
+// littr contains all type definitions and core functionality for littr.
 package littr
 
 import (
