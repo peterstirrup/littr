@@ -1,0 +1,47 @@
+
+
+type Timer struct {
+	text string
+	start time.Time
+}
+
+func (t *Timer) Start(title string) {
+	t.text = title
+	t.start = time.Now()
+}
+
+func (t *Timer) End() {
+	fmt.Println(fmt.Sprintf("%s%v", t.text, time.Since(t.start)))
+}
+
+func GetCurrentName() string {
+	return getFrame()
+}
+
+func getFrame() string {
+	var s string
+	for i := 0; i < 10; i++ {
+		// We need the frame at index skipFrames+2, since we never want runtime.Callers and getFrame
+		targetFrameIndex := i + 3
+		// Set size to targetFrameIndex+2 to ensure we have room for one more caller than we need
+		programCounters := make([]uintptr, targetFrameIndex+2)
+		n := runtime.Callers(0, programCounters)
+		frame := runtime.Frame{Function: "unknown"}
+		if n > 0 {
+			frames := runtime.CallersFrames(programCounters[:n])
+				for more, frameIndex := true, 0; more && frameIndex <= targetFrameIndex; frameIndex++ {
+				var frameCandidate runtime.Frame
+				frameCandidate, more = frames.Next()
+				if frameIndex == targetFrameIndex {
+					frame = frameCandidate
+				}
+			}
+		}
+		switch frame.Function {
+		case "unknown", "goexit":
+			return s
+		}
+		s += strings.Split(frame.Function, ".")[1] + "#"
+	}
+	return s
+}

@@ -3,10 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
-	"net/http"
 	"time"
 )
+
+
+
 
 var port = 8080
 
@@ -23,23 +24,18 @@ func main() {
 	EvenDeeper()
 	AnotherTestFun()
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		AnotherTestFun()
-		fmt.Println("In server handler")
-	})
-
-	if err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil); err != nil {
-		log.Printf("HTTP server terminated: %s\n", err)
-	}
+	//if err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil); err != nil {
+	//	log.Printf("HTTP server terminated: %s\n", err)
+	//}
 }
 
 func AnotherTestFun() {
-	time.Sleep(time.Second)
+	time.Sleep(2 * time.Second)
 	EvenDeeper()
 	EvennnnDeeper()
 }
 
-func EvenDeeper(){
+func EvenDeeper() {
 	fmt.Println("Still do nothing")
 	EvenEvenDeeper()
 }
