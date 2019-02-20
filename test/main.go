@@ -3,11 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"os"
 	"time"
 )
-
-
-
 
 var port = 8080
 
@@ -24,9 +25,26 @@ func main() {
 	EvenDeeper()
 	AnotherTestFun()
 
-	//if err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil); err != nil {
-	//	log.Printf("HTTP server terminated: %s\n", err)
-	//}
+	// Set handler
+	http.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			log.Printf("Error reading body: %v", err)
+			http.Error(w, "can't read body", http.StatusBadRequest)
+			return
+		}
+
+		w.Write(body)
+
+		if string(body) == "quit" {
+			w.Write([]byte("quitting"))
+			os.Exit(0)
+		}
+	})
+
+	if err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil); err != nil {
+		fmt.Printf("HTTP server terminated: %s\n", err)
+	}
 }
 
 func AnotherTestFun() {

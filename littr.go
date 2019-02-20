@@ -32,6 +32,8 @@ type littr struct {
 	// (i.e. how many logs littr makes and how descriptive they are)
 	v        int
 	outLines []string
+	// output is a channel which receives the output from the program
+	output chan string
 	// t is the root node for the code tree
 	t tree.CodeTree
 	// timerDef is the Go code for the timer
@@ -80,7 +82,6 @@ func (l *littr) Start() error {
 	// We want to be left with the original code file, not some mess
 	defer func() {
 		// Now rewrite old code back
-		l.Log(1, "writing original code back")
 		err = l.WriteOriginalCode()
 		if err != nil {
 			l.Log(0, "unable to write original code back")
@@ -150,6 +151,7 @@ func (l *littr) WriteLittredCode() error {
 
 // WriteOriginalCode writes the code before it was littered to file.
 func (l *littr) WriteOriginalCode() error {
+	l.Log(1, "writing original code")
 	err := ioutil.WriteFile(l.filePath, []byte(l.ogCode), 0644)
 	if err != nil {
 		return fmt.Errorf("failed to write old code to file with %s", err)
@@ -281,7 +283,7 @@ func (l *littr) InsertTimer() error {
 
 // Execute runs the go file specified by l.filePath along with any flags and builds the tree.
 func (l *littr) Execute() error {
-	b, err := exec.Command("/usr/local/go/bin/go", "run", l.filePath, l.flags).Output()
+	b, err := exec.Command("/usrcd/local/go/bin/go", "run", l.filePath, l.flags).Output()
 	if err != nil {
 		return fmt.Errorf("l.Execute failed with %s\n", err.Error())
 	}
