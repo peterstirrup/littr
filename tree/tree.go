@@ -21,7 +21,7 @@ type Node struct {
 
 // ReadTree starts at the root node and descends through reading the tree.
 func (t *CodeTree) ReadTree() {
-	fmt.Println("\n\033[38;2;0;0;0m\033[37;1;4m\033[38;2;255;255;255m\033[48;2;0;0;0m___TREE_______________________________________\033[0m\033[48;2;0;0;0m\033[38;2;255;255;255m")
+	fmt.Println("\n\033[38;2;0;0;0m\033[37;1;4m\033[38;2;255;255;255m\033[48;2;0;0;0m   TREE                      \033[0m\033[48;2;0;0;0m\033[38;2;255;255;255m")
 	t.DescendTree( t.Root.Children["goexit"].Children["main"].Children["main"], 0)
 	fmt.Println("\u001b[0m")
 }

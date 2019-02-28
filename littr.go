@@ -12,10 +12,15 @@ import (
 )
 
 var (
+	// timer is the code injected into the start of littred functions
 	timer = `
 	t := Timer{}
 	t.Start("##/#" + strings.Replace(GetCurrentName(), ".", "#", -1))
 	defer t.End()`
+
+	// goLocation is where your go package is found
+	// To find this on Linux: $ whereis go
+	goLocation = "/usr/local/go/bin/go"
 )
 
 type littr struct {
@@ -283,7 +288,7 @@ func (l *littr) InsertTimer() error {
 
 // Execute runs the go file specified by l.filePath along with any flags and builds the tree.
 func (l *littr) Execute() error {
-	b, err := exec.Command("/usrcd/local/go/bin/go", "run", l.filePath, l.flags).Output()
+	b, err := exec.Command(goLocation, "run", l.filePath, l.flags).Output()
 	if err != nil {
 		return fmt.Errorf("l.Execute failed with %s\n", err.Error())
 	}
@@ -314,7 +319,7 @@ func (l *littr) Log(v int, s interface{}) {
 
 // PrintOutput prints the program output, ignoring any littr.
 func (l *littr) PrintOutput() {
-	fmt.Println("\n\033[38;2;0;0;0m\033[37;1;4m\033[38;2;0;0;0m\033[48;2;240;240;240m___PROGRAM_OUTPUT____________________________\033[0m\033[48;2;240;240;240m\033[38;2;0;0;0m")
+	fmt.Println("\n\033[38;2;0;0;0m\033[37;1;4m\033[38;2;0;0;0m\033[48;2;240;240;240m   PROGRAM OUTPUT                         \033[0m\033[48;2;240;240;240m\033[38;2;0;0;0m")
 	for _, line := range l.outLines[:len(l.outLines)-2] {
 		if len(line) < 4 || line[:4] != "##/#" {
 			fmt.Println(" " + line)
